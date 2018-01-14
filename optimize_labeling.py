@@ -2,7 +2,7 @@ import numpy as np
 import networkx as nx
 import math
 
-debug = True
+debug = False
 # This function exhausts all the possible
 # two-element pairs in a set L
 def get_pairs(L):
@@ -137,8 +137,10 @@ def argmin(pair, image, f):
 	 	# if debug:
 	 	
 		# skip the pixel if it is neither labeled alpha nor beta
-		if f[0,i] != pair[0]:
-			if f[0,i] != pair[1]:
+		if abs(int(f[0,i]) - pair[0]) > 1e-6:
+			if abs(int(f[0,i]) - pair[1]) > 1e-6:
+				print('@@@skipping pixel #' + str(i))
+				print(f[0, i])
 				continue
 
 		# add the index to p_alpha_bet
@@ -156,14 +158,14 @@ def argmin(pair, image, f):
 		# print('-- end of edge_weight')
 		weight = edge_weight(pair[0], pair, i, f, image, width, height)
 		G.add_edge('1', str(index), capacity = weight)
-		if debug:
-			print('adding edge 1-' + str(index) +', with weight ' + str(weight))
+		#if debug:
+		print('adding edge 1-' + str(index) +', with weight ' + str(weight))
 		# add t-links that connect to beta
 		# print(edge_weight(pair[1], i, f, width, height))
 		weight = edge_weight(pair[1], pair, i, f, image, width, height)
 		G.add_edge('2', str(index), capacity = weight)
-		if debug:
-			print('adding edge 2-' + str(index) +', with weight ' + str(weight))
+		#if debug:
+		print('adding edge 2-' + str(index) +', with weight ' + str(weight))
 
 	# add n-links
 	for i in range(0, len(p_alpha_beta) - 1):
@@ -191,7 +193,7 @@ def optimize_labeling(f, image, L):
 		success = False
 		for pair in get_pairs(L):
 			f_hat, e_f_hat = argmin(pair, image, f)
-			if True:
+			if debug:
 				print('==optimize_labeling for pair')
 				print(pair)
 				print('==end of pair')
@@ -200,6 +202,7 @@ def optimize_labeling(f, image, L):
 				f = f_hat
 				e_f = e_f_hat
 				success = True
+				break
 		if not success:
 			break
 	return f

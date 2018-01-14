@@ -28,6 +28,9 @@ class TestGetPairs(unittest.TestCase):
 		  if debug:
 				  print(pair)
 		  self.assertEqual(2, len(pair))
+	 def test4(self):
+		  pairs = opt.get_pairs(list(range(1,3)))
+		  self.assertEqual(1, len(pairs))
 
 if __name__ == '__main__':
     unittest.main()
